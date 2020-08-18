@@ -128,6 +128,49 @@
   > ```
   >
   > 
+  >
+  > 示例：
+  >
+  > ```sh
+  > -m time --weekdays sa,su
+  > # 匹配周末，或者写成--weekdays 6,7
+  > -m time --datestart 2020-10-01 --datestop 2020-10-07
+  > # 匹配国庆7天
+  > -m time --timestart 12:00 --timestop 14:00 --kernelts
+  > # 中午时间
+  > -m time --weekdays Fr --monthdays 22,23,24,25,26,27,28
+  > # 本月的第四个星期五
+  > -m time --daystart 2008-01-01T17:00 --datestop 2008-01-01T23:59:59
+  > # 包含开头与结束时间在内。注意，停止时间与新一天的第一秒是不匹配
+  > -m time --weekdays Mo --timestart 23:00 --timestop 01:00
+  > # 星期一从凌晨0点到凌晨1点一小时，然后从晚上23:00在开始再一小时，这是不连续的两个小时
+  > -m time --weekdays Mo --timestart 23:00 --timestop 01:00 --contiguous
+  > # 从星期一晚上23:00 开始的连个小时，这个是连续的两个小时，会跨到星期二
+  > ```
+  >
+  > ```sh
+  > # 从早上8:00点到晚上18:00禁止上网冲浪
+  > iptables -A OUTPUT -p tcp --dport 80 \
+  > -m --timestart 8:00 --timestop 18:00 -j REJECT
+  > ```
+  >
+  > 
+
+- mac地址：`-m | --match mac`
+
+  > 匹配二层的以太网地址源地址
+  >
+  > 地址格式：xx:xx:xx:xx:xx:xx
+  >
+  > 语法：
+  >
+  > ```sh
+  > [!] --mac-source address
+  > 
+  > # 示例：
+  > iptables -A INPUT -i <local interface> -p tcp \
+  > -m mac --mac-source xx:xx:xx:xx:xx:xx -j DROP
+  > ```
 
 目标扩展
 
