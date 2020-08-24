@@ -172,6 +172,58 @@
   > -m mac --mac-source xx:xx:xx:xx:xx:xx -j DROP
   > ```
 
+- TCP 头部匹配选项
+
+  > [!] --tcp-flags mask comp
+  >
+  > mask: 应该检查的标志，SYN ACK FIN RST URG PSH ALL NONE（逗号分隔）
+  >
+  > Comp: 必须设置的以逗号分隔的标志列表
+
+  > [!] --syn
+  >
+  > 仅匹配设置了SYN位的TCP数据包
+
+  > 示例：
+  >
+  > ```sh
+  > iptables -I INPUT -p tcp -m tcp --dport 22 \
+  > --tcp-flags SYN,ACK,FIN,RST,URG,PSH SYN -j ACCEPT
+  > iptables -I OUTPUT -p tcp -m tcp --sport 22 \
+  > --tcp-flags SYN,ACK,FIN,RST,URG,PSH SYN,ACK -j ACCEPT
+  > iptables -I INPUT -p tcp -m tcp --dport 22 \
+  > --sync -j ACCEPT
+  > ```
+
+- 状态`-m | --match state`
+
+  > state 扩展可以访问数据包的连接跟踪状态
+  >
+  > 是conntrack 模块的子集
+  >
+  > 语法：
+  >
+  > ```yaml
+  > [! ] --state state
+  > state: 
+  > NES: 新创建连接的数据包
+  > ESTABLISHED: 与在两个方向上看到分组的连接相关联的数据包
+  > RELATED: 新连接的数据包，而且与现有连接相关联。如：FTP数据传输或ICMP错误消息
+  > INVALID: 没有与任何已知连接相关联的数据包，建议DROP
+  > UNTRACKED: 为跟踪的数据包
+  > ```
+  >
+  > iptables的state machine
+  >
+  > - state machine （状态机）是iptables中的一个特殊部分
+  > - 内核中connection tracking machine框架来实现对连接的跟踪
+  > - 通过TCP，UDP或ICMP协议等唯一性信息来跟踪数据流
+  >   - NEW、ESTABLISHED、RELATED、INVALID、UNTRACKED
+  > - 跟踪文件：cat /proc/net/nf_conntrack
+  > - 加载的模块：lsmod | grep track
+
+
+
 目标扩展
 
 
